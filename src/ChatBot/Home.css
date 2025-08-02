@@ -175,3 +175,12 @@
 .chat-input button:hover {
   background-color: #005bb5;
 }
+.home-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: url(/image.png); /* adjust path */
+  background-repeat: repeat;
+  background-size: 400px; /* tweak to your liking */
+  font-family: 'Segoe UI', sans-serif;
+}
