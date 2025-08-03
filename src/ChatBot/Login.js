@@ -1,6 +1,9 @@
+// Login.js
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { MessageCircle } from 'react-feather';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from './firebase'; // Adjust the path if needed
 import './Login.css';
 
 function Login() {
@@ -10,16 +13,19 @@ function Login() {
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password) {
       setError('Please fill in all fields');
-    } else {
-      setError('');
-      // Here you would typically handle the login logic
-      console.log('Login attempted with:', { email, password, rememberMe });
-      // For demonstration purposes, we'll just navigate to the home page
+      return;
+    }
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      console.log('Login successful!');
       navigate('/home');
+    } catch (err) {
+      setError(err.message);
     }
   };
 
@@ -31,6 +37,7 @@ function Login() {
           <h1 className="app-name">ChatApp</h1>
         </div>
         <h2 className="login-title">Welcome Back!</h2>
+
         <div className="input-group">
           <label htmlFor="email">Email</label>
           <input
@@ -42,6 +49,7 @@ function Login() {
             required
           />
         </div>
+
         <div className="input-group">
           <label htmlFor="password">Password</label>
           <input
@@ -53,6 +61,7 @@ function Login() {
             required
           />
         </div>
+
         <div className="remember-me">
           <input
             type="checkbox"
@@ -62,8 +71,11 @@ function Login() {
           />
           <label htmlFor="rememberMe">Remember me</label>
         </div>
+
         {error && <p className="error-message">{error}</p>}
+
         <button type="submit" className="login-button">Log In</button>
+
         <p className="signup-link">
           Don't have an account? <Link to="/signup">Sign up</Link>
         </p>
@@ -76,4 +88,3 @@ function Login() {
 }
 
 export default Login;
-

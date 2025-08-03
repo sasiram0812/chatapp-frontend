@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { MessageCircle } from 'react-feather';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { auth } from './firebase';
 import './Signup.css';
 
 function Signup() {
@@ -16,24 +18,29 @@ function Signup() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (Object.values(formData).some(field => field === '')) {
-      setError('Please fill in all fields');
-    } else if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-    } else {
-      setError('');
-      // Here you would typically handle the signup logic
-      console.log('Signup attempted with:', formData);
-      // For demonstration purposes, we'll just navigate to the home page
+    const { name, email, password, confirmPassword } = formData;
+
+    if (!name || !email || !password || !confirmPassword) {
+      return setError('Please fill in all fields');
+    }
+
+    if (password !== confirmPassword) {
+      return setError('Passwords do not match');
+    }
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(userCredential.user, { displayName: name });
+
       navigate('/home');
+    } catch (err) {
+      console.error(err.message);
+      setError(err.message);
     }
   };
 
@@ -65,7 +72,7 @@ function Signup() {
           Already have an account? <Link to="/login">Log in</Link>
         </p>
         <p className="terms">
-          By signing up, you agree to our <Link to="/terms">Terms of Service</Link> and <Link to="/privacy">Privacy Policy</Link>
+          By signing up, you agree to our <Link to="/terms">Terms</Link> and <Link to="/privacy">Privacy Policy</Link>
         </p>
       </form>
     </div>
@@ -73,4 +80,3 @@ function Signup() {
 }
 
 export default Signup;
-

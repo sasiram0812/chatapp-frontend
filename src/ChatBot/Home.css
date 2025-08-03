@@ -18,7 +18,7 @@
 }
 
 .logo-icon {
-  color: #0070f3;
+  color: #000000;
 }
 
 .app-name {
@@ -183,4 +183,10 @@
   background-repeat: repeat;
   background-size: 400px; /* tweak to your liking */
   font-family: 'Segoe UI', sans-serif;
+}
+.home-logo:hover {
+  cursor: pointer;
+  /* optional: add a soft shadow on hover */
+  filter: drop-shadow(0 1px 4px #0070f340);
+  transition: filter 0.2s;
 }
